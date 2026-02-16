@@ -1,0 +1,229 @@
+---
+title: "How to Build Your Own Chatbot with LangChain and OpenAI"
+description: "A beginner-friendly tutorial on building a custom, use-case-specific chatbot using LangChain and OpenAI. Learn prompt engineering, API setup, and validation techniques."
+date: "March 20, 2024"
+readTime: "12 min read"
+tags: ["LangChain", "OpenAI", "Python", "AI/ML"]
+---
+
+In this tutorial, we'll build a **custom chatbot for a specific use case** using **LangChain** and **OpenAI**. If you're just getting started with large language models (LLMs) and feel overwhelmed by the hype, this guide is for you.
+
+The tutorial is **beginner-friendly**, easy to follow, and focuses on practical implementation rather than theory.
+
+This is the **first part of a three-part series**:
+
+1.  **Part 1 (this article):** Build a simple, use-case-specific chatbot
+2.  **Part 2:** Turn the chatbot into a usable application
+3.  **Part 3:** Connect the chatbot to external data sources
+
+## Use Case Overview
+
+Imagine you're starting an **ice-cream business** and want an assistant that knows everything about ice cream:
+
+*   Flavor combinations
+*   Simple recipes
+*   Fun ice-cream facts and jokes
+*   Customer preferences
+
+We'll create an AI assistant called **"Scoopsie"** that answers **only ice-cream-related questions**. If a user asks something outside this scope, the chatbot will politely decline.
+
+To build this assistant, we'll use:
+
+*   **LangChain** for prompt management and chaining
+*   **OpenAI's GPT-3.5 model** for text generation
+
+LangChain is a powerful framework that simplifies building LLM-powered applications by providing helpful abstractions like prompt templates and chains.
+
+## Environment Setup
+
+For a clean and isolated setup, we'll create a new **Conda environment**. If you prefer virtual environments (`venv`), that works too.
+
+### Create a Conda Environment
+
+```bash
+conda create --name chatbot_langchain python=3.10
+```
+
+### Activate the Environment
+
+```bash
+conda activate chatbot_langchain
+```
+
+### Install Dependencies
+
+After activating the environment, install the required libraries:
+
+```bash
+pip install -r requirements.txt
+```
+
+Once this is done, we're ready to start building the chatbot.
+
+## Step-by-Step Implementation
+
+### Step 1: Creating the Prompt
+
+The first step is to define a **clear and constrained prompt** for our chatbot. We want Scoopsie to:
+
+*   Answer only ice-cream-related questions
+*   Reject unrelated queries
+*   Clearly identify itself
+
+To keep things modular, we'll store prompts in a separate file called `prompts.py`.
+
+```python
+from langchain.prompts import PromptTemplate
+
+ice_cream_assistant_template = """
+You are an ice cream assistant chatbot named "Scoopsie". Your expertise is
+exclusively in providing information and advice about anything related to ice creams.
+This includes flavor combinations, ice cream recipes, and general ice cream-related queries.
+
+If a question is not about ice cream, respond with:
+"I specialize only in ice cream related queries."
+
+Question: {question}
+Answer:
+"""
+
+ice_cream_assistant_prompt_template = PromptTemplate(
+    input_variables=["question"],
+    template=ice_cream_assistant_template
+)
+```
+
+Naming the chatbot helps validate prompt behavior. For example:
+
+*   Asking "Who are you?" → should return **Scoopsie**
+*   Asking "What is 2+2?" → should politely refuse
+
+### Step 2: Setting Up the OpenAI API Key
+
+Sign up at **OpenAI** and generate an API key. Create a `.env` file in your project root:
+
+```env
+OPENAI_API_KEY="your_unique_key_goes_here"
+```
+
+We'll use **python-dotenv** to load environment variables:
+
+```python
+from dotenv import load_dotenv
+
+load_dotenv()
+```
+
+This keeps your API key secure and out of your source code.
+
+### Step 3: Initializing the Language Model
+
+Now, create a new file called `chatbot.py`. We'll initialize the OpenAI model using LangChain's wrapper.
+
+```python
+from langchain_openai import OpenAI
+
+llm = OpenAI(
+    model="gpt-3.5-turbo-instruct",
+    temperature=0.7
+)
+```
+
+**Temperature** controls randomness:
+
+*   Low values → more deterministic responses
+*   Higher values → more creative output
+
+A value between **0.5 and 1.0** is usually a good balance.
+
+> [!NOTE]
+> ⚠️ **Note:** OpenAI deprecated several models in early 2024. Always ensure the model you're using is supported by your LangChain version.
+
+### Step 4: Creating an LLM Chain
+
+LangChain's `LLMChain` allows us to combine:
+
+*   A prompt template
+*   A language model
+
+This abstraction simplifies input formatting and output handling.
+
+```python
+from langchain.chains import LLMChain
+
+llm_chain = LLMChain(
+    llm=llm,
+    prompt=ice_cream_assistant_prompt_template
+)
+```
+
+### Step 5: Putting Everything Together
+
+Below is the complete `chatbot.py` script:
+
+```python
+from langchain_openai import OpenAI
+from langchain.chains import LLMChain
+from prompts import ice_cream_assistant_prompt_template
+from dotenv import load_dotenv
+
+load_dotenv()
+
+llm = OpenAI(
+    model="gpt-3.5-turbo-instruct",
+    temperature=0.7
+)
+
+llm_chain = LLMChain(
+    llm=llm,
+    prompt=ice_cream_assistant_prompt_template
+)
+
+def query_llm(question):
+    response = llm_chain.invoke({"question": question})
+    print(response["text"])
+
+if __name__ == "__main__":
+    query_llm("Who are you?")
+```
+
+## Testing and Validation
+
+Since we haven't added memory yet, each query is independent.
+
+### Example Queries
+
+**1. Identity Check**
+
+```python
+query_llm("Who are you?")
+```
+
+✅ Expected: Scoopsie introduces itself.
+
+**2. Out-of-Scope Question**
+
+```python
+query_llm("What is 2 + 2?")
+```
+
+✅ Expected: Politely declines.
+
+**3. Valid Ice-Cream Query**
+
+```python
+query_llm("I need a chocolate ice-cream recipe")
+```
+
+✅ Expected: Provides a relevant recipe.
+
+## Conclusion
+
+In this tutorial, we built a **simple, use-case-specific chatbot** using LangChain and OpenAI. You learned how to:
+
+*   Design a constrained prompt
+*   Use LangChain's prompt templates and chains
+*   Safely manage API keys
+*   Test and validate chatbot behavior
+
+In **Part 2**, we'll turn this chatbot into a real application. In **Part 3**, we'll connect it to external data sources for richer responses.
