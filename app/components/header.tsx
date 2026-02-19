@@ -50,12 +50,14 @@ export default function Header() {
 
                     {/* Right side actions */}
                     <div className="hidden md:flex items-center space-x-4">
-                        <Button
-                            variant="outline"
-                            className="glass border-primary/30 hover:border-primary hover:glow-sm transition-all"
-                        >
-                            Resume
-                        </Button>
+                        <Link href="/assets/resume.pdf" target="_blank" rel="noopener noreferrer">
+                            <Button
+                                variant="outline"
+                                className="glass border-primary/30 hover:border-primary hover:glow-sm transition-all"
+                            >
+                                Resume
+                            </Button>
+                        </Link>
                         <ThemeToggle />
                     </div>
 
@@ -84,13 +86,15 @@ export default function Header() {
                                 </Link>
                             ))}
                             <div className="flex items-center space-x-4 pt-2 border-t border-border/50">
-                                <Button
-                                    variant="outline"
-                                    size="sm"
-                                    className="glass border-primary/30"
-                                >
-                                    Resume
-                                </Button>
+                                <Link href="/assets/resume.pdf" target="_blank" rel="noopener noreferrer">
+                                    <Button
+                                        variant="outline"
+                                        size="sm"
+                                        className="glass border-primary/30"
+                                    >
+                                        Resume
+                                    </Button>
+                                </Link>
                                 <ThemeToggle />
                             </div>
                         </nav>
