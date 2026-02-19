@@ -71,7 +71,7 @@ export default function ProjectCard({ title, description, image, link, company, 
         ) : company ? (
           <span className="inline-flex items-center gap-2 text-sm text-muted-foreground">
             <Building2 className="h-4 w-4" />
-            <span>Project associated with {company}</span>
+            <span>{company === "Freelance" ? "Freelance Project" : `Project associated with ${company}`}</span>
           </span>
         ) : null}
       </CardFooter>

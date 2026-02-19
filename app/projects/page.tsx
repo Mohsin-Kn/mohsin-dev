@@ -33,6 +33,7 @@ export default function ProjectsPage() {
             <div className="mx-auto max-w-7xl">
               <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                 {/* Company Projects */}
+
                 <ProjectCard
                   title="Real-Time Golf Ball Detection and Tracking App"
                   description="Find My Ball is a mobile-integrated tool that detects and tracks golf balls in real time, even in cluttered environments. It uses a custom-trained YOLO model optimized for lightweight mobile deployment on iOS."
@@ -42,12 +43,22 @@ export default function ProjectsPage() {
                 />
 
                 <ProjectCard
+                  title="IdentityVision – Multi-Document OCR System"
+                  description="Developed a OCR system using PaddleOCR and FastAPI to extract structured fields (Name, Father Name, Gender, Country, DOB) from document images. Integrated a web UI for real-time previews and optional Supabase storage for persistent JSON records. Applied preprocessing (grayscale, CLAHE, denoise) to improve extraction accuracy."
+                  image="/assets/ocr.webp?height=400&width=600"
+                  company="Freelance"
+                  tags={["PaddleOCR", "FastAPI", "Supabase", "OpenCV"]}
+                />
+
+
+                 <ProjectCard
                   title="Spanish Real Estate Ad Classifier"
                   description="Developed an end-to-end text classification system using a fine-tuned BERT model to detect Spanish real estate ads. The model is containerized with Docker and deployed via FastAPI on AWS EC2 for real-time and batch predictions."
                   image="/assets/classification.webp?height=400&width=600"
                   company="AxcelerateAI"
                   tags={["BERT", "FastAPI", "Docker", "AWS"]}
                 />
+
 
                 <ProjectCard
                   title="Restaurant Monitoring System"
